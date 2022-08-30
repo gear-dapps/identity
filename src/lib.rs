@@ -76,6 +76,8 @@ impl IdentityStorage {
         piece_id: PieceId,
         status: bool,
     ) {
+        // TODO!: Unnecessary check
+        // TODO!: Check validator (message source)
         if validator == ZERO_KEY || subject == ZERO_KEY {
             panic!("IDENTITY: Can not use a zero public key");
         }
@@ -165,6 +167,7 @@ impl IdentityStorage {
     /// * `subject` - subject's public key.
     /// * `hash` - the hash to check against.
     fn check_claim(&mut self, subject: PublicKey, piece_id: PieceId, hash: [u8; 32]) {
+        // TODO!: Rewrite in rust
         let mut status = false;
         if self
             .user_claims
