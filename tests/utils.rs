@@ -1,4 +1,4 @@
-use gstd::{prelude::*, ActorId};
+use gstd::prelude::*;
 use gtest::{Program, System};
 use identity_io::*;
 
@@ -6,15 +6,7 @@ use identity_io::*;
 pub fn init_identity(sys: &System, user: u64) -> Program {
     sys.init_logger();
     let id_program = Program::current(sys);
-    assert!(id_program
-        .send(
-            user,
-            InitIdentity {
-                owner_id: ActorId::from(user),
-            },
-        )
-        .log()
-        .is_empty());
+    assert!(id_program.send(user, InitIdentity {},).log().is_empty());
 
     id_program
 }
@@ -62,7 +54,7 @@ pub fn validation_claim_utils(
 ) {
     let res = id_program.send(
         user,
-        IdentityAction::ClaimValidationStatus {
+        IdentityAction::ChangeClaimValidationStatus {
             validator,
             subject,
             piece_id,
@@ -120,54 +112,41 @@ pub fn verify_claim_utils(
     }
 }
 
-pub fn check_claim_utils(
+// META-STATE
+pub fn check_claim_hash_state_utils(
     id_program: &Program,
-    user: u64,
     subject: PublicKey,
     piece_id: PieceId,
     hash: [u8; 32],
     status: bool,
-    should_fail: bool,
 ) {
-    let res = id_program.send(
-        user,
-        IdentityAction::CheckClaim {
-            subject,
-            piece_id,
-            hash,
-        },
-    );
-
-    if should_fail {
-        assert!(res.main_failed());
-    } else {
-        assert!(res.contains(&(
-            user,
-            IdentityEvent::CheckedClaim {
-                subject,
-                piece_id,
-                status,
+    match id_program.meta_state(IdentityStateQuery::CheckClaim(subject, piece_id, hash)) {
+        Ok(IdentityStateReply::CheckedClaim(_, _, real_status)) => {
+            if real_status != status {
+                panic!("IDENTITY: Checking statuses differ")
             }
-            .encode()
-        )));
+        }
+        _ => {
+            unreachable!(
+                "Unreachable metastate reply for the IdentityStateQuery::CheckClaim payload has occurred"
+            )
+        }
     }
 }
-
-// META-STATE
 pub fn check_user_claims_state_utils(
     id_program: &Program,
     subject: PublicKey,
     claims: BTreeMap<PieceId, Claim>,
 ) {
     match id_program.meta_state(IdentityStateQuery::UserClaims(subject)) {
-        gstd::Ok(IdentityStateReply::UserClaims(real_claims)) => {
-            if !maps_match(&real_claims, &claims) {
+        Ok(IdentityStateReply::UserClaims(real_claims)) => {
+            if real_claims != claims {
                 panic!("IDENTITY: User claims differ")
             }
         }
         _ => {
             unreachable!(
-                "Unreachable metastate reply for the IdentityStateQuery::UserClaims payload has occured"
+                "Unreachable metastate reply for the IdentityStateQuery::UserClaims payload has occurred"
             )
         }
     }
@@ -180,18 +159,14 @@ pub fn check_claim_state_utils(
     claim: Claim,
 ) {
     match id_program.meta_state(IdentityStateQuery::Claim(subject, piece_id)) {
-        gstd::Ok(IdentityStateReply::Claim(real_claim)) => {
-            if let Some(cl) = real_claim {
-                if claim != cl {
-                    panic!("IDENTITY: Claims differ");
-                }
-            } else {
-                panic!("IDENTITY: No such claim");
+        Ok(IdentityStateReply::Claim(real_claim)) => {
+            if claim != real_claim.expect("IDENTITY: No such claim") {
+                panic!("IDENTITY: Claims differ");
             }
         }
         _ => {
             unreachable!(
-                "Unreachable metastate reply for the IdentityStateQuery::Claim payload has occured"
+                "Unreachable metastate reply for the IdentityStateQuery::Claim payload has occurred"
             )
         }
     }
@@ -204,14 +179,14 @@ pub fn check_verifiers_state_utils(
     verifiers: Vec<PublicKey>,
 ) {
     match id_program.meta_state(IdentityStateQuery::Verifiers(subject, piece_id)) {
-        gstd::Ok(IdentityStateReply::Verifiers(real_verifiers)) => {
+        Ok(IdentityStateReply::Verifiers(real_verifiers)) => {
             if real_verifiers != verifiers {
                 panic!("IDENTITY: Verifiers differ");
             }
         }
         _ => {
             unreachable!(
-                "Unreachable metastate reply for the IdentityStateQuery::Verifiers payload has occured"
+                "Unreachable metastate reply for the IdentityStateQuery::Verifiers payload has occurred"
             )
         }
     }
@@ -221,17 +196,17 @@ pub fn check_date_state_utils(
     id_program: &Program,
     subject: PublicKey,
     piece_id: PieceId,
-    date: u128,
+    date: u64,
 ) {
     match id_program.meta_state(IdentityStateQuery::Date(subject, piece_id)) {
-        gstd::Ok(IdentityStateReply::Date(real_date)) => {
+        Ok(IdentityStateReply::Date(real_date)) => {
             if real_date != date {
                 panic!("IDENTITY: Dates differ");
             }
         }
         _ => {
             unreachable!(
-                "Unreachable metastate reply for the IdentityStateQuery::Date payload has occured"
+                "Unreachable metastate reply for the IdentityStateQuery::Date payload has occurred"
             )
         }
     }
@@ -244,28 +219,15 @@ pub fn check_valid_state_utils(
     valid: bool,
 ) {
     match id_program.meta_state(IdentityStateQuery::ValidationStatus(subject, piece_id)) {
-        gstd::Ok(IdentityStateReply::ValidationStatus(real_valid)) => {
+        Ok(IdentityStateReply::ValidationStatus(real_valid)) => {
             if real_valid != valid {
                 panic!("IDENTITY: Validation status differ");
             }
         }
         _ => {
             unreachable!(
-                "Unreachable metastate reply for the IdentityStateQuery::ValidationStatus payload has occured"
+                "Unreachable metastate reply for the IdentityStateQuery::ValidationStatus payload has occurred"
             )
         }
     }
-}
-
-fn maps_match<
-    T: Eq + gstd::Ord + gstd::Clone,
-    U: gstd::Clone + gstd::PartialEq<V>,
-    V: gstd::Clone,
->(
-    map1: &BTreeMap<T, U>,
-    map2: &BTreeMap<T, V>,
-) -> bool {
-    map1.len() == map2.len()
-        && map1.keys().cloned().collect::<Vec<_>>() == map2.keys().cloned().collect::<Vec<_>>()
-        && map1.values().cloned().collect::<Vec<_>>() == map2.values().cloned().collect::<Vec<_>>()
 }

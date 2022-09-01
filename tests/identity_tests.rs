@@ -9,7 +9,7 @@ use utils::*;
 
 const USER: u64 = 10;
 const PIECE_ID: PieceId = 1;
-const DATE: u128 = 12288282;
+const DATE: u64 = 12288282;
 
 #[test]
 fn issue_claim_by_subject() {
@@ -20,7 +20,7 @@ fn issue_claim_by_subject() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -39,7 +39,7 @@ fn issue_claim_by_subject() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
@@ -58,7 +58,7 @@ fn issue_claim_by_issuer() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -77,7 +77,7 @@ fn issue_claim_by_issuer() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
@@ -93,7 +93,7 @@ fn issue_multiple_claim() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let city = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -116,7 +116,7 @@ fn issue_multiple_claim() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
@@ -132,7 +132,7 @@ fn validation_status_from_subject() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -151,7 +151,7 @@ fn validation_status_from_subject() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
@@ -182,7 +182,7 @@ fn validation_status_from_issuer() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -201,7 +201,7 @@ fn validation_status_from_issuer() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
@@ -231,7 +231,7 @@ fn validation_status_failures() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -250,7 +250,7 @@ fn validation_status_failures() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
@@ -300,7 +300,7 @@ fn verify_claim() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -319,7 +319,7 @@ fn verify_claim() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
@@ -354,7 +354,7 @@ fn verify_claim_failures() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -373,7 +373,7 @@ fn verify_claim_failures() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
@@ -414,7 +414,7 @@ fn check_claim() {
     ));
 
     let mut hasher = Sha256::new();
-    hasher.update(b"Moscow");
+    hasher.update(b"Amsterdam");
 
     // read hash digest and consume hasher
     let city = hasher.finalize().as_slice().try_into().expect("Wrong size");
@@ -437,29 +437,18 @@ fn check_claim() {
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims: BTreeMap<PieceId, Claim> = BTreeMap::new();
+    let mut claims = BTreeMap::new();
     claims.insert(PIECE_ID, claim.clone());
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
 
-    check_claim_utils(
+    check_claim_hash_state_utils(&id_program, subject_pair.public().0, PIECE_ID, city, true);
+    check_claim_hash_state_utils(
         &id_program,
-        USER,
-        subject_pair.public().0,
-        PIECE_ID,
-        city,
-        true,
-        false,
-    );
-    // check non-existing hash thus returning false as status
-    check_claim_utils(
-        &id_program,
-        USER,
         subject_pair.public().0,
         PIECE_ID,
         [0; 32],
-        false,
         false,
     );
 }

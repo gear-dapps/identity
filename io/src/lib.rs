@@ -1,8 +1,6 @@
 #![no_std]
 
-use codec::{Decode, Encode};
-use gstd::{prelude::*, ActorId};
-use scale_info::TypeInfo;
+use gstd::prelude::*;
 
 /// Typings for u8 arrays.
 pub type PublicKey = [u8; 32];
@@ -15,7 +13,7 @@ pub struct ClaimData {
     /// Set of hashed data (e.g. BTreeSet::from([city], [street])).
     pub hashed_info: BTreeSet<[u8; 32]>,
     /// Date of issuance of this claim.
-    pub issuance_date: u128,
+    pub issuance_date: u64,
     /// Validation status of the claim.
     pub valid: bool,
 }
@@ -62,7 +60,7 @@ pub enum IdentityAction {
     ///
     /// # Requirements:
     /// * all public keys and signatures MUST be non-zero arrays
-    ClaimValidationStatus {
+    ChangeClaimValidationStatus {
         /// Validator's public key. Can be either a subject's or an issuer's one.
         validator: PublicKey,
         /// Subject's public key.
@@ -86,18 +84,6 @@ pub enum IdentityAction {
         subject: PublicKey,
         /// Claim's id.
         piece_id: PieceId,
-    },
-    /// Check the claim with a hash from it's data set.
-    ///
-    /// # Requirements:
-    /// * all public keys and signatures MUST be non-zero arrays
-    CheckClaim {
-        /// Subject's public key.
-        subject: PublicKey,
-        /// Claim's id.
-        piece_id: PieceId,
-        /// Hash to check against.
-        hash: [u8; 32],
     },
 }
 
@@ -129,28 +115,48 @@ pub enum IdentityEvent {
         /// Claim's id.
         piece_id: PieceId,
     },
-    CheckedClaim {
-        /// Subject's public key.
-        subject: PublicKey,
-        /// Claim's id.
-        piece_id: PieceId,
-        /// The result of the check (e.g. true is it was found in BTreeSet).
-        status: bool,
-    },
 }
+
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
 pub enum IdentityStateQuery {
     /// Get all the claims for a specified public key.
+    ///
+    /// Arguments:
+    /// `PublicKey` - is the public key of a user whose claims are queried
     UserClaims(PublicKey),
     /// Get a specific claim with the provided public key and a claim id.
+    ///
+    /// Arguments:
+    /// `PublicKey` - is the public key of a user whose claim is queried
+    /// `PieceId` - is the claim id
     Claim(PublicKey, PieceId),
     /// Get all the verifiers' public keys for a corresponding claim.
+    ///
+    /// Arguments:
+    /// `PublicKey` - is the public key of a user whose claim is queried
+    /// `PieceId` - is the claim id
     Verifiers(PublicKey, PieceId),
     /// Get claim's validation status.
+    ///
+    /// Arguments:
+    /// `PublicKey` - is the public key of a user whose claim is queried
+    /// `PieceId` - is the claim id
     ValidationStatus(PublicKey, PieceId),
     /// Get claim's issuance date.
+    ///
+    /// Arguments:
+    /// `PublicKey` - is the public key of a user whose claim is queried
+    /// `PieceId` - is the claim id
     Date(PublicKey, PieceId),
+    /// Check the claim with a hash from it's data set.
+    ///
+    /// Arguments:
+    /// `PublicKey` - is the public key of a user whose claim is queried
+    /// `PieceId` - is the claim id
+    /// `[u8; 32]` - is the hash being queried.
+    /// If it is in the claim hashed_info set then true is returned. Otherwise - false.
+    CheckClaim(PublicKey, PieceId, [u8; 32]),
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
@@ -159,16 +165,10 @@ pub enum IdentityStateReply {
     Claim(Option<Claim>),
     Verifiers(Vec<PublicKey>),
     ValidationStatus(bool),
-    Date(u128),
+    Date(u64),
+    CheckedClaim(PublicKey, PieceId, bool),
 }
 
 /// Initializes an identity storage.
-///
-/// # Requirements:
-/// * `owner_id` MUST be non-zero address
-///
-/// `owner_id` - is the owner of the contract.
 #[derive(Decode, Encode, TypeInfo)]
-pub struct InitIdentity {
-    pub owner_id: ActorId,
-}
+pub struct InitIdentity {}

@@ -1,6 +1,6 @@
 #![no_std]
 
-use gstd::{msg, prelude::*, ActorId};
+use gstd::{msg, prelude::*};
 use identity_io::*;
 
 const ZERO_KEY: [u8; 32] = [0; 32];
@@ -8,9 +8,8 @@ const ZERO_SIGNATURE: [u8; 64] = [0; 64];
 
 #[derive(Debug, Default)]
 pub struct IdentityStorage {
-    pub owner_id: ActorId,
-    pub user_claims: BTreeMap<PublicKey, BTreeMap<PieceId, Claim>>,
-    pub piece_counter: u128,
+    user_claims: BTreeMap<PublicKey, BTreeMap<PieceId, Claim>>,
+    piece_counter: u128,
 }
 
 static mut IDENTITY: Option<IdentityStorage> = None;
@@ -69,7 +68,7 @@ impl IdentityStorage {
     /// * `subject`- the subject's public key.
     /// * `piece_id` - claim's id.
     /// * `status` - new claim's status.
-    fn validation_status(
+    fn change_validation_status(
         &mut self,
         validator: PublicKey,
         subject: PublicKey,
@@ -155,52 +154,12 @@ impl IdentityStorage {
         )
         .expect("IDENTITY: Error during replying with IdentityEvent::VerifiedClaim");
     }
-
-    /// Check the claim's internal data.
-    ///
-    /// # Requirements:
-    /// * all the public keys and signatures MUST be non-zero.
-    /// * `verifier` - MUST differ from the claim's subject or issuer.
-    ///
-    /// # Arguments:
-    /// * `piece_id` - claim's id.
-    /// * `subject` - subject's public key.
-    /// * `hash` - the hash to check against.
-    fn check_claim(&mut self, subject: PublicKey, piece_id: PieceId, hash: [u8; 32]) {
-        // TODO!: Rewrite in rust
-        let mut status = false;
-        if self
-            .user_claims
-            .get(&subject)
-            .expect("The user has no claims")
-            .get(&piece_id)
-            .expect("The user has not such claim with the provided piece_id")
-            .data
-            .hashed_info
-            .contains(&hash)
-        {
-            status = true;
-        }
-        msg::reply(
-            IdentityEvent::CheckedClaim {
-                subject,
-                piece_id,
-                status,
-            },
-            0,
-        )
-        .expect("IDENTITY: Error during replying with IdentityEvent::CheckedClaim");
-    }
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn init() {
-    let config: InitIdentity = msg::load().expect("Unable to decode InitIdentity");
-    if config.owner_id == ActorId::zero() {
-        panic!("IDENTITY: Owner MUST be non-zero address");
-    }
+    let _config: InitIdentity = msg::load().expect("Unable to decode InitIdentity");
     let id_storage = IdentityStorage {
-        owner_id: config.owner_id,
         piece_counter: 1,
         ..Default::default()
     };
@@ -218,23 +177,23 @@ async fn main() {
             subject,
             data,
         } => identity.issue_claim(issuer, issuer_signature, subject, data),
-        IdentityAction::ClaimValidationStatus {
+        IdentityAction::ChangeClaimValidationStatus {
             validator,
             subject,
             piece_id,
             status,
-        } => identity.validation_status(validator, subject, piece_id, status),
+        } => identity.change_validation_status(validator, subject, piece_id, status),
         IdentityAction::VerifyClaim {
             verifier,
             verifier_signature,
             subject,
             piece_id,
         } => identity.verify_claim(verifier, verifier_signature, subject, piece_id),
-        IdentityAction::CheckClaim {
-            subject,
-            piece_id,
-            hash,
-        } => identity.check_claim(subject, piece_id, hash),
+        // IdentityAction::CheckClaim {
+        //     subject,
+        //     piece_id,
+        //     hash,
+        // } => identity.check_claim(subject, piece_id, hash),
     }
 }
 
@@ -258,39 +217,41 @@ extern "C" fn meta_state() -> *mut [i32; 2] {
                 .cloned(),
         ),
         IdentityStateQuery::ValidationStatus(pkey, piece_id) => {
-            IdentityStateReply::ValidationStatus(
-                identity
-                    .user_claims
-                    .get(&pkey)
-                    .expect("No such public key")
-                    .get(&piece_id)
-                    .expect("No such piece_id")
-                    .data
-                    .valid,
-            )
+            let mut status = false;
+            if let Some(user_claim) = identity.user_claims.get(&pkey) {
+                if let Some(claim) = user_claim.get(&piece_id) {
+                    status = claim.data.valid
+                }
+            }
+            IdentityStateReply::ValidationStatus(status)
         }
-        IdentityStateQuery::Date(pkey, piece_id) => IdentityStateReply::Date(
-            identity
-                .user_claims
-                .get(&pkey)
-                .expect("No such public key")
-                .get(&piece_id)
-                .expect("No such piece_id")
-                .data
-                .issuance_date,
-        ),
-        IdentityStateQuery::Verifiers(pkey, piece_id) => IdentityStateReply::Verifiers(
-            identity
-                .user_claims
-                .get(&pkey)
-                .expect("No such public key")
-                .get(&piece_id)
-                .expect("No such piece_id")
-                .verifiers
-                .keys()
-                .cloned()
-                .collect(),
-        ),
+        IdentityStateQuery::Date(pkey, piece_id) => {
+            let mut date: u64 = 0;
+            if let Some(user_claim) = identity.user_claims.get(&pkey) {
+                if let Some(claim) = user_claim.get(&piece_id) {
+                    date = claim.data.issuance_date
+                }
+            }
+            IdentityStateReply::Date(date)
+        }
+        IdentityStateQuery::Verifiers(pkey, piece_id) => {
+            let mut verifiers: Vec<PublicKey> = Vec::new();
+            if let Some(user_claim) = identity.user_claims.get(&pkey) {
+                if let Some(claim) = user_claim.get(&piece_id) {
+                    verifiers = claim.verifiers.keys().cloned().collect()
+                }
+            }
+            IdentityStateReply::Verifiers(verifiers)
+        }
+        IdentityStateQuery::CheckClaim(pkey, piece_id, hash) => {
+            let mut status = false;
+            if let Some(user_claim) = identity.user_claims.get(&pkey) {
+                if let Some(claim) = user_claim.get(&piece_id) {
+                    status = claim.data.hashed_info.contains(&hash)
+                }
+            }
+            IdentityStateReply::CheckedClaim(pkey, piece_id, status)
+        }
     };
     gstd::util::to_leak_ptr(reply.encode())
 }
