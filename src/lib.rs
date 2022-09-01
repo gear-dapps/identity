@@ -3,9 +3,6 @@
 use gstd::{msg, prelude::*};
 use identity_io::*;
 
-const ZERO_KEY: [u8; 32] = [0; 32];
-const ZERO_SIGNATURE: [u8; 64] = [0; 64];
-
 #[derive(Debug, Default)]
 pub struct IdentityStorage {
     user_claims: BTreeMap<PublicKey, BTreeMap<PieceId, Claim>>,
@@ -32,9 +29,6 @@ impl IdentityStorage {
         subject: PublicKey,
         data: ClaimData,
     ) {
-        if subject == ZERO_KEY || issuer_signature == ZERO_SIGNATURE || issuer == ZERO_KEY {
-            panic!("IDENTITY: Can not use a zero public key");
-        }
         self.user_claims.entry(subject).or_default().insert(
             self.piece_counter,
             Claim {
@@ -75,11 +69,6 @@ impl IdentityStorage {
         piece_id: PieceId,
         status: bool,
     ) {
-        // TODO!: Unnecessary check
-        // TODO!: Check validator (message source)
-        if validator == ZERO_KEY || subject == ZERO_KEY {
-            panic!("IDENTITY: Can not use a zero public key");
-        }
         let data_piece = self
             .user_claims
             .get(&subject)
@@ -125,9 +114,6 @@ impl IdentityStorage {
         subject: PublicKey,
         piece_id: PieceId,
     ) {
-        if verifier == ZERO_KEY || subject == ZERO_KEY || verifier_signature == ZERO_SIGNATURE {
-            panic!("IDENTITY: Can not use a zero public key");
-        }
         let piece = self
             .user_claims
             .get(&subject)
@@ -160,7 +146,7 @@ impl IdentityStorage {
 pub unsafe extern "C" fn init() {
     let _config: InitIdentity = msg::load().expect("Unable to decode InitIdentity");
     let id_storage = IdentityStorage {
-        piece_counter: 1,
+        piece_counter: 0,
         ..Default::default()
     };
     IDENTITY = Some(id_storage);

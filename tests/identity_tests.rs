@@ -8,7 +8,7 @@ mod utils;
 use utils::*;
 
 const USER: u64 = 10;
-const PIECE_ID: PieceId = 1;
+const PIECE_ID: PieceId = 0;
 const DATE: u64 = 12288282;
 
 #[test]

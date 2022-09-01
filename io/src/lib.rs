@@ -117,7 +117,6 @@ pub enum IdentityEvent {
     },
 }
 
-
 #[derive(Debug, Decode, Encode, TypeInfo)]
 pub enum IdentityStateQuery {
     /// Get all the claims for a specified public key.
