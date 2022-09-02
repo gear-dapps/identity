@@ -170,4 +170,4 @@ pub enum IdentityStateReply {
 
 /// Initializes an identity storage.
 #[derive(Decode, Encode, TypeInfo)]
-pub struct InitIdentity {}
+pub struct InitIdentity;

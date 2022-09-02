@@ -40,16 +40,17 @@ impl IdentityStorage {
             },
         );
 
-        self.piece_counter += 1;
         msg::reply(
             IdentityEvent::ClaimIssued {
                 issuer,
                 subject,
-                piece_id: self.piece_counter - 1,
+                piece_id: self.piece_counter,
             },
             0,
         )
         .expect("IDENTITY: Error during replying with IdentityEvent::ClaimIssued");
+
+        self.piece_counter += 1;
     }
 
     /// Changes claim's validation status.
@@ -175,11 +176,6 @@ async fn main() {
             subject,
             piece_id,
         } => identity.verify_claim(verifier, verifier_signature, subject, piece_id),
-        // IdentityAction::CheckClaim {
-        //     subject,
-        //     piece_id,
-        //     hash,
-        // } => identity.check_claim(subject, piece_id, hash),
     }
 }
 

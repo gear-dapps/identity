@@ -6,7 +6,7 @@ use identity_io::*;
 pub fn init_identity(sys: &System, user: u64) -> Program {
     sys.init_logger();
     let id_program = Program::current(sys);
-    assert!(id_program.send(user, InitIdentity {},).log().is_empty());
+    assert!(id_program.send(user, InitIdentity,).log().is_empty());
 
     id_program
 }
