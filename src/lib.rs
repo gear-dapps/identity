@@ -144,13 +144,14 @@ impl IdentityStorage {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn init() {
-    let _config: InitIdentity = msg::load().expect("Unable to decode InitIdentity");
+extern "C" fn init() {
     let id_storage = IdentityStorage {
         piece_counter: 0,
         ..Default::default()
     };
-    IDENTITY = Some(id_storage);
+    unsafe {
+        IDENTITY = Some(id_storage);
+    }
 }
 
 #[gstd::async_main]
