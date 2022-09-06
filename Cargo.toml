@@ -12,7 +12,7 @@ identity-io = { path = "io" }
 [dev-dependencies]
 gtest = { git = "https://github.com/gear-tech/gear.git" }
 sp-core = { git = "https://github.com/gear-tech/substrate.git", branch = "gear-stable" }
-sha2 = "0.10.2"
+sha2 = "0.10.5"
 hex-literal = "0.3.4"
 
 [build-dependencies]
