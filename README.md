@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# Gear Template App
+# Identity
 
 [![Build][build_badge]][build_href]
 [![License][lic_badge]][lic_href]
@@ -85,4 +85,4 @@ make
 
 ## License
 
-The source code is licensed under [MIT license](LICENSE).
+The source code is licensed under the [MIT license](LICENSE).
