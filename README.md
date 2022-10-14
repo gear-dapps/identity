@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# Gear Template App
+# Identity
 
 [![Build][build_badge]][build_href]
 [![License][lic_badge]][lic_href]
@@ -24,7 +24,7 @@ An example of identity storage.
 
 ## Prebuilt Binaries
 
-Raw, optimized, and meta WASM binaries can be found in the [Releases section](https://github.com/gear-dapps/app/releases).
+Raw, optimized, and meta WASM binaries can be found in the [Releases section](https://github.com/gear-dapps/identity/releases).
 
 ## Building Locally
 
@@ -85,4 +85,4 @@ make
 
 ## License
 
-The source code is licensed under [MIT license](LICENSE).
+The source code is licensed under the [MIT license](LICENSE).
