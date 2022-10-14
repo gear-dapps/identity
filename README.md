@@ -24,7 +24,7 @@ An example of identity storage.
 
 ## Prebuilt Binaries
 
-Raw, optimized, and meta WASM binaries can be found in the [Releases section](https://github.com/gear-dapps/app/releases).
+Raw, optimized, and meta WASM binaries can be found in the [Releases section](https://github.com/gear-dapps/identity/releases).
 
 ## Building Locally
 

@@ -46,19 +46,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "98161a4e3e2184da77bb14f02184cdd111e83bbbcc9979dfee3c44b9a85f5602"
 
 [[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "gear-wasm-builder",
- "gstd",
- "gtest",
- "hex-literal",
- "identity-io",
- "sha2 0.10.6",
- "sp-core",
-]
-
-[[package]]
 name = "array-bytes"
 version = "4.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -973,6 +960,19 @@ checksum = "fde6edd6cef363e9359ed3c98ba64590ba9eecba2293eb5a723ab32aee8926aa"
 dependencies = [
  "cxx",
  "cxx-build",
+]
+
+[[package]]
+name = "identity"
+version = "0.1.0"
+dependencies = [
+ "gear-wasm-builder",
+ "gstd",
+ "gtest",
+ "hex-literal",
+ "identity-io",
+ "sha2 0.10.6",
+ "sp-core",
 ]
 
 [[package]]
