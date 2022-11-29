@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2022-11-29
+### Changed
+- Updated `gstd`, `gtest`, `gear-wasm-builder` to the `stable` branch.
+### Removed
+- `identity-io` crate.
+
 ## [0.1.1] - 2022-10-26
 ### Changed
 - Updated `gstd`, `gtest`, `gear-wasm-builder` to the actual revision (`#d4552434`).

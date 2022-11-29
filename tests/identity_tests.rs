@@ -1,7 +1,7 @@
 use gstd::prelude::*;
 use gtest::System;
 use hex_literal::hex;
-use identity_io::*;
+use identity::io::*;
 use sha2::{Digest, Sha256};
 use sp_core::{sr25519::Pair as Sr25519Pair, Pair};
 mod utils;
