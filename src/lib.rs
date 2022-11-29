@@ -1,7 +1,10 @@
 #![no_std]
 
+pub mod io;
+
 use gstd::{msg, prelude::*};
-use identity_io::*;
+
+use crate::io::*;
 
 #[derive(Debug, Default)]
 pub struct IdentityStorage {

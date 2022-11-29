@@ -1,6 +1,6 @@
 use gstd::prelude::*;
 use gtest::{Program, System};
-use identity_io::*;
+use identity::io::*;
 
 // MESSAGES
 pub fn init_identity(sys: &System, user: u64) -> Program {

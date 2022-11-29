@@ -1,5 +1,3 @@
-#![no_std]
-
 use gstd::prelude::*;
 
 /// Typings for u8 arrays.
