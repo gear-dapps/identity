@@ -136,7 +136,7 @@ pub fn check_claim_hash_state_utils(
 pub fn check_user_claims_state_utils(
     id_program: &Program,
     subject: PublicKey,
-    claims: BTreeMap<PieceId, Claim>,
+    claims: Vec<(PieceId, Claim)>,
 ) {
     match id_program.meta_state(IdentityStateQuery::UserClaims(subject)) {
         Ok(IdentityStateReply::UserClaims(real_claims)) => {

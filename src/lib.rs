@@ -2,13 +2,13 @@
 
 pub mod io;
 
-use gstd::{msg, prelude::*};
-
 use crate::io::*;
+use gstd::{msg, prelude::*};
+use hashbrown::HashMap;
 
 #[derive(Debug, Default)]
 pub struct IdentityStorage {
-    user_claims: BTreeMap<PublicKey, BTreeMap<PieceId, Claim>>,
+    user_claims: HashMap<PublicKey, HashMap<PieceId, Claim>>,
     piece_counter: u128,
 }
 
@@ -38,7 +38,7 @@ impl IdentityStorage {
                 issuer,
                 issuer_signature,
                 subject,
-                verifiers: BTreeMap::new(),
+                verifiers: Vec::new(),
                 data,
             },
         );
@@ -132,7 +132,7 @@ impl IdentityStorage {
             .or_default()
             .entry(piece_id)
             .and_modify(|claim| {
-                claim.verifiers.insert(verifier, verifier_signature);
+                claim.verifiers.push((verifier, verifier_signature));
             });
         msg::reply(
             IdentityEvent::VerifiedClaim {
@@ -190,8 +190,8 @@ extern "C" fn meta_state() -> *mut [i32; 2] {
     let reply = match state {
         IdentityStateQuery::UserClaims(pkey) => {
             IdentityStateReply::UserClaims(match identity.user_claims.get(&pkey) {
-                None => BTreeMap::new(),
-                Some(claims) => claims.clone(),
+                None => Vec::new(),
+                Some(claims) => Vec::from_iter(claims.clone().into_iter()),
             })
         }
         IdentityStateQuery::Claim(pkey, piece_id) => IdentityStateReply::Claim(
@@ -224,7 +224,9 @@ extern "C" fn meta_state() -> *mut [i32; 2] {
             let mut verifiers: Vec<PublicKey> = Vec::new();
             if let Some(user_claim) = identity.user_claims.get(&pkey) {
                 if let Some(claim) = user_claim.get(&piece_id) {
-                    verifiers = claim.verifiers.keys().cloned().collect()
+                    let (public_keys, _signatures): (Vec<PublicKey>, Vec<Signature>) =
+                        claim.verifiers.clone().into_iter().unzip();
+                    verifiers = public_keys;
                 }
             }
             IdentityStateReply::Verifiers(verifiers)

@@ -31,7 +31,7 @@ pub struct Claim {
     /// Subject's public key.
     pub subject: PublicKey,
     /// Map of verifiers PublicKey -> Signature
-    pub verifiers: BTreeMap<PublicKey, Signature>,
+    pub verifiers: Vec<(PublicKey, Signature)>,
     /// Internal data of the claim
     pub data: ClaimData,
 }
@@ -158,7 +158,7 @@ pub enum IdentityStateQuery {
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
 pub enum IdentityStateReply {
-    UserClaims(BTreeMap<PieceId, Claim>),
+    UserClaims(Vec<(PieceId, Claim)>),
     Claim(Option<Claim>),
     Verifiers(Vec<PublicKey>),
     ValidationStatus(bool),
