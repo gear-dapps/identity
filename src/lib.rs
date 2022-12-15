@@ -38,7 +38,7 @@ impl IdentityStorage {
                 issuer,
                 issuer_signature,
                 subject,
-                verifiers: Vec::new(),
+                verifiers: vec![],
                 data,
             },
         );
@@ -190,7 +190,7 @@ extern "C" fn meta_state() -> *mut [i32; 2] {
     let reply = match state {
         IdentityStateQuery::UserClaims(pkey) => {
             IdentityStateReply::UserClaims(match identity.user_claims.get(&pkey) {
-                None => Vec::new(),
+                None => vec![],
                 Some(claims) => Vec::from_iter(claims.clone().into_iter()),
             })
         }
@@ -221,7 +221,7 @@ extern "C" fn meta_state() -> *mut [i32; 2] {
             IdentityStateReply::Date(date)
         }
         IdentityStateQuery::Verifiers(pkey, piece_id) => {
-            let mut verifiers: Vec<PublicKey> = Vec::new();
+            let mut verifiers: Vec<PublicKey> = vec![];
             if let Some(user_claim) = identity.user_claims.get(&pkey) {
                 if let Some(claim) = user_claim.get(&piece_id) {
                     let (public_keys, _signatures): (Vec<PublicKey>, Vec<Signature>) =

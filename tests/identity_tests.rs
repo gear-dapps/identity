@@ -34,13 +34,12 @@ fn issue_claim_by_subject() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -72,13 +71,12 @@ fn issue_claim_by_issuer() {
         issuer: issuer_pair.public().0,
         issuer_signature: issuer_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -111,13 +109,12 @@ fn issue_multiple_claim() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -146,13 +143,12 @@ fn validation_status_from_subject() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -196,13 +192,12 @@ fn validation_status_from_issuer() {
         issuer: issuer_pair.public().0,
         issuer_signature: issuer_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -245,13 +240,12 @@ fn validation_status_failures() {
         issuer: issuer_pair.public().0,
         issuer_signature: issuer_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -314,13 +308,12 @@ fn verify_claim() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data.clone(),
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -368,13 +361,12 @@ fn verify_claim_failures() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data.clone(),
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -432,13 +424,12 @@ fn check_claim() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: Vec::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = Vec::new();
-    claims.push((PIECE_ID, claim.clone()));
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
