@@ -25,7 +25,7 @@ fn issue_claim_by_subject() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -62,7 +62,7 @@ fn issue_claim_by_issuer() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -100,7 +100,7 @@ fn issue_multiple_claim() {
     let street = hasher.finalize().as_slice().try_into().expect("Wrong size");
 
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([city, street]),
+        hashed_info: Vec::from([city, street]),
         issuance_date: DATE,
         valid: true,
     };
@@ -134,7 +134,7 @@ fn validation_status_from_subject() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -183,7 +183,7 @@ fn validation_status_from_issuer() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -231,7 +231,7 @@ fn validation_status_failures() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -299,7 +299,7 @@ fn verify_claim() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -352,7 +352,7 @@ fn verify_claim_failures() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -415,7 +415,7 @@ fn check_claim() {
     let street = hasher.finalize().as_slice().try_into().expect("Wrong size");
 
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([city, street]),
+        hashed_info: Vec::from([city, street]),
         issuance_date: DATE,
         valid: true,
     };

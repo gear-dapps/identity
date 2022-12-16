@@ -8,8 +8,8 @@ pub type PieceId = u128;
 /// ClaimData represents an internal data stored inside a claim.
 #[derive(Decode, Encode, TypeInfo, Debug, Clone, PartialEq)]
 pub struct ClaimData {
-    /// Set of hashed data (e.g. BTreeSet::from([city], [street])).
-    pub hashed_info: BTreeSet<[u8; 32]>,
+    /// Set of hashed data (e.g. Vec::from([city], [street])).
+    pub hashed_info: Vec<[u8; 32]>,
     /// Date of issuance of this claim.
     pub issuance_date: u64,
     /// Validation status of the claim.
