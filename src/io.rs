@@ -8,8 +8,8 @@ pub type PieceId = u128;
 /// ClaimData represents an internal data stored inside a claim.
 #[derive(Decode, Encode, TypeInfo, Debug, Clone, PartialEq)]
 pub struct ClaimData {
-    /// Set of hashed data (e.g. BTreeSet::from([city], [street])).
-    pub hashed_info: BTreeSet<[u8; 32]>,
+    /// Set of hashed data (e.g. Vec::from([city], [street])).
+    pub hashed_info: Vec<[u8; 32]>,
     /// Date of issuance of this claim.
     pub issuance_date: u64,
     /// Validation status of the claim.
@@ -31,7 +31,7 @@ pub struct Claim {
     /// Subject's public key.
     pub subject: PublicKey,
     /// Map of verifiers PublicKey -> Signature
-    pub verifiers: BTreeMap<PublicKey, Signature>,
+    pub verifiers: Vec<(PublicKey, Signature)>,
     /// Internal data of the claim
     pub data: ClaimData,
 }
@@ -158,7 +158,7 @@ pub enum IdentityStateQuery {
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
 pub enum IdentityStateReply {
-    UserClaims(BTreeMap<PieceId, Claim>),
+    UserClaims(Vec<(PieceId, Claim)>),
     Claim(Option<Claim>),
     Verifiers(Vec<PublicKey>),
     ValidationStatus(bool),

@@ -25,7 +25,7 @@ fn issue_claim_by_subject() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -34,13 +34,12 @@ fn issue_claim_by_subject() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -63,7 +62,7 @@ fn issue_claim_by_issuer() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -72,13 +71,12 @@ fn issue_claim_by_issuer() {
         issuer: issuer_pair.public().0,
         issuer_signature: issuer_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -102,7 +100,7 @@ fn issue_multiple_claim() {
     let street = hasher.finalize().as_slice().try_into().expect("Wrong size");
 
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([city, street]),
+        hashed_info: Vec::from([city, street]),
         issuance_date: DATE,
         valid: true,
     };
@@ -111,13 +109,12 @@ fn issue_multiple_claim() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -137,7 +134,7 @@ fn validation_status_from_subject() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -146,13 +143,12 @@ fn validation_status_from_subject() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -187,7 +183,7 @@ fn validation_status_from_issuer() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -196,13 +192,12 @@ fn validation_status_from_issuer() {
         issuer: issuer_pair.public().0,
         issuer_signature: issuer_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -236,7 +231,7 @@ fn validation_status_failures() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -245,13 +240,12 @@ fn validation_status_failures() {
         issuer: issuer_pair.public().0,
         issuer_signature: issuer_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -305,7 +299,7 @@ fn verify_claim() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -314,13 +308,12 @@ fn verify_claim() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data.clone(),
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -359,7 +352,7 @@ fn verify_claim_failures() {
     // read hash digest and consume hasher
     let result = hasher.finalize().as_slice().try_into().expect("Wrong size");
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([result]),
+        hashed_info: Vec::from([result]),
         issuance_date: DATE,
         valid: true,
     };
@@ -368,13 +361,12 @@ fn verify_claim_failures() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data.clone(),
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
@@ -423,7 +415,7 @@ fn check_claim() {
     let street = hasher.finalize().as_slice().try_into().expect("Wrong size");
 
     let claim_data = ClaimData {
-        hashed_info: BTreeSet::from([city, street]),
+        hashed_info: Vec::from([city, street]),
         issuance_date: DATE,
         valid: true,
     };
@@ -432,13 +424,12 @@ fn check_claim() {
         issuer: subject_pair.public().0,
         issuer_signature: subject_pair.sign(claim_data.encode().as_slice()).0,
         subject: subject_pair.public().0,
-        verifiers: BTreeMap::new(),
+        verifiers: vec![],
         data: claim_data,
     };
 
     issue_claim_utils(&id_program, USER, claim.clone(), PIECE_ID, false);
-    let mut claims = BTreeMap::new();
-    claims.insert(PIECE_ID, claim.clone());
+    let claims = vec![(PIECE_ID, claim.clone())];
     check_user_claims_state_utils(&id_program, subject_pair.public().0, claims);
     check_claim_state_utils(&id_program, subject_pair.public().0, PIECE_ID, claim);
     check_date_state_utils(&id_program, subject_pair.public().0, PIECE_ID, DATE);
